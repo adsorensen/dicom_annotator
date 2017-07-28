@@ -1,4 +1,9 @@
-select.g-annotation-domain
+select.g-annotation-domain(style='height: 25px')
   option (none)
-  each domain in domains
-    option(value=domain)= domain
+  option test
+  option other test that is long
+  option hello
+button.g-annotation-domain(title="Auto Levels" style='width: 100px; height: 25px;') Add label
+input#labelText(type='text', title="Labels Text")
+p Labels to add:
+select#labels(size='5' style='width: 120px')
