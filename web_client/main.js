@@ -3,7 +3,9 @@ import { restRequest } from 'girder/rest';
 import DicomView from 'girder_plugins/dicom_viewer/views/DicomView';
 import template from './annotationSelect.pug';
 import './annotationSelect.styl';
-import view from 'views/view'
+//import view from 'views/view;
+import View from 'girder/views/View';
+import view from './views/view';
 
 wrap(DicomView, 'render', function (render) {
     render.call(this);
