@@ -5,7 +5,7 @@ import template from './annotationSelect.pug';
 import './annotationSelect.styl';
 //import view from 'views/view;
 import View from 'girder/views/View';
-import view from './views/view';
+import annotationView from './views/view';
 
 wrap(DicomView, 'render', function (render) {
     render.call(this);
@@ -17,6 +17,12 @@ wrap(DicomView, 'render', function (render) {
         this.$('.g-annotation-container').html(template({
             domains: resp
         }));
+        const view = new annotationView({
+            el: this.$('.g-dicom-view'),
+            parentView: this,
+            item: this.model
+        });
+        view.render();
     });
 
     return this;

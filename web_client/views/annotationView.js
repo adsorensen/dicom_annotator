@@ -18,7 +18,7 @@ import View from 'girder/views/View';
 import ViewTemplate from '../annotationSelect.pug';
 import '../annotationSelect.styl';
 
-var DicomView = View.extend({
+var AnnotationView = View.extend({
     events: {
     	'click .add-label': function (event) {
             event.preventDefault();
