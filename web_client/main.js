@@ -24,40 +24,42 @@ wrap(DicomView, 'render', function (render) {
 
 DicomView.prototype.events['change .g-annotation-domain'] = function (e) {
     var domain = $(e.currentTarget).val();
+    //alert("here");
     this.item.editMetadata('annotationDomain', 'annotationDomain', domain, () => {
         this.item.trigger('g:changed');
     });
 }
 
+// Event to handle when the user clicks on the add label button
+// Function will grab the selected option from the drop down
+// and add a new option to the labels selection box with the 
+// name and value from the drop down
 DicomView.prototype.events['click .add-label'] = function (e) {
-    var $tempvalue2 = $('#selection option:selected').val();
-    var $tempvalue = $('#selection option:selected').text();
-    alert($tempvalue2);
-    $('#labels').append($('<option>', {
-        value: 1,
-        text: $tempvalue
-    }));
-
-    // var select = document.getElementById('labels');
-    // var opt = document.createElement('option');
-    // opt.value = text;
-    // opt.innerHTML = text;
-    // select.appendChild(opt);
-    // this.labels.push(text);
+    var $label = $('#selection option:selected').text();
+    var $value = $('#selection option:selected').val();
+    if ($("#labels option[value=" + $value + "]").length > 0)
+    {
+        alert($label + " already exists");
+    }
+    else
+    {
+        $('#labels').append($('<option>', {
+        value: $value,
+        text: $label
+        }));
+    }
 }
 
+// Event to handle when the user clicks the save labels button
+// Function will take all labels currently in the selection box
+// and add them to the girder item metadata
 DicomView.prototype.events['click .save-labels'] = function (e) {
     
 }
 
-// contains: function (text) {
-//         //text = text.toLowerCase;
-//         for(var i=0; i<this.labels.length; i++)
-//         {
-//             if(this.labels[i].toLowerCase() === text.toLowerCase())
-//             {
-//                 return true;
-//             }
-//         }
-//         return false;
-//     },
+// Event to handle when the user clicks the remove label button
+// Function will remove the selected value from the selection box
+DicomView.prototype.events['click .remove-label'] = function (e) {
+    $('#labels option:selected').remove();
+
+}

@@ -63,10 +63,6 @@ var AnnotationView = View.extend({
         this.printLabels();
     },
 
-    addLabel: function () {
-
-    },
-
     removeLabel: function () {
         var text = document.getElementById("labelText").value;
         if(text != "")
