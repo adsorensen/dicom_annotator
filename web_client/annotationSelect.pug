@@ -1,8 +1,10 @@
-select.g-annotation-domain(style='height: 25px')
-  option (none)
+select#selection.g-annotation-domain(style='height: 25px')
+  option(value='blah') none45
   option test
   option other test that is long
   option hello
+  each domain in domains
+    option(value=domain)= domain
 button.g-annotation-domain.add-label(title="Add Label" style='width: 100px; height: 25px;') Add label
 p Labels to add:
 select#labels(size='5' style='width: 120px')
