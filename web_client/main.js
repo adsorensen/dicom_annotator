@@ -65,7 +65,7 @@ DicomView.prototype.events['click .save-labels'] = function (e) {
     });
     labels = labels.slice(0, -2);
     //alert(labels);
-    this.item.editMetadata('Ontology Tags', 'Ontology Tags', labels, () => {
+    this.item.editMetadata('Annotation Tags', 'Annotation Tags', labels, () => {
         this.item.trigger('g:changed');
     });
 }
