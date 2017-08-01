@@ -61,7 +61,7 @@ DicomView.prototype.events['click .add-label'] = function (e) {
 DicomView.prototype.events['click .save-labels'] = function (e) {
     var labels = "";
     $("#labels > option").each(function() {
-        labels += this.text + ";\n";
+        labels += this.value + ";\n";
     });
     labels = labels.slice(0, -2);
     //alert(labels);
