@@ -1,5 +1,6 @@
 import { wrap } from 'girder/utilities/PluginUtils';
 import { restRequest } from 'girder/rest';
+import './routes';
 import DicomView from 'girder_plugins/dicom_viewer/views/DicomView';
 import template from './annotationSelect.pug';
 import './annotationSelect.styl';
