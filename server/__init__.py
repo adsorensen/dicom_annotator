@@ -17,8 +17,12 @@ def getAnnotationDomains(params):
     myDict = {'adam': 'hello', 'john': 8000}
     return ModelImporter.model('setting').get('annotation_domain_list', default=myDict)
 
+@access.public
+@autoDescribeRoute(
+    Description('Load the list of annotation domains')
+)
 def putAnnotationDomains(params):
-    return ModelImporter.model('setting').put('annotation_domain_list', default=["hello"])
+    return ModelImporter.model('setting').get('annotation_domain_list', default=["hello"])
 
 
 def load(info):
