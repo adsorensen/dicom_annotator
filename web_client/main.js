@@ -8,9 +8,6 @@ import './annotationSelect.styl';
 import View from 'girder/views/View';
 //import annotationView from './views/view';
 
-var mylist = [{key:"test", value:"testValue"}, {key:"other", value:"otherValue"},
-    {key:"test #2", value:"something"}, {key: "Adam", value: "Sorensen"}];
-
 wrap(DicomView, 'render', function (render) {
     render.call(this);
 
@@ -19,8 +16,8 @@ wrap(DicomView, 'render', function (render) {
     }).done((resp) => {
         this.$('.g-dicom-panes').before('<div class="g-annotation-container"></div>');
         this.$('.g-annotation-container').html(template({
-            //domains: resp
-            domains: mylist
+            domains: resp
+            //domains: mylist
         }));
     });
 

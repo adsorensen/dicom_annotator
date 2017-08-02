@@ -7,25 +7,22 @@ from . import constants
 
 @setting_utilities.validator('annotation_domain_list')
 def _validateDefaultImage(doc):
-    if not isinstance(doc['value'], list):
-        raise ValidationException('Annotation domain list must be a list')
+    if not isinstance(doc['value'], dict):
+        raise ValidationException('Annotation domain list must be a dictionary')
 
 @access.public
 @autoDescribeRoute(
     Description('Return the list of annotation domains')
 )
 def getAnnotationDomains(params):
-    return ModelImporter.model('setting').get('annotation_domain_list', 
-        default=constants.PluginSettings.labelsDictionary)
+    return ModelImporter.model('setting').get('annotation_domain_list', default=[])
 
 @access.public
 @autoDescribeRoute(
     Description('Load the list of annotation domains')
 )
 def putAnnotationDomains(params):
-    #myDict2 = {'other': 'stuff', 'sorensen': 1731}
-    return ModelImporter.model('setting').get('annotation_domain_list', 
-        default=constants.PluginSettings.labelsDictionary)
+    ModelImporter.model('setting').set('annotation_domain_list', constants.PluginSettings.labelsDictionary)
 
 
 def load(info):
