@@ -25,3 +25,6 @@ class PluginSettings:
     'Blood': 'bloodval', 'Bone': 'boneval',
     'Cancer': 'good'
     }
+
+    labelsList = ["Blood", "Cancer", "Tumor", "Back"]
+

@@ -17,14 +17,16 @@ var ConfigView = View.extend({
             restRequest({
                 type: 'GET',
                 path: 'system/annotation_domains',
-                // data: {
-                //     list: JSON.stringify(['provenance.resources'])
-                // }
             }).done((resp) => {
                 var domains = resp;
             });
             alert(domains);
             alert("done");
+        },
+        'click .save-button': function (event) {
+            event.preventDefault();
+            var $study = $('#annotator-study').val();
+            alert($study);
         }
     },
     initialize: function () {

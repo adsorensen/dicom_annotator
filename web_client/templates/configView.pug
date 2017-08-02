@@ -6,10 +6,10 @@ p.g-annotator-description
 form#g-annotator-form(role="form")
   .form-group
     label.control-label(for="annotator.resources") Study name
-    input#annotator.study(
+    input#annotator-study(
       type="text", placeholder="Name of study...", style='width: 250px')
   p#g-provenance-error-message.g-validation-failed-message
-  input.btn.btn-sm.btn-primary(type="submit", value="Save")
+  input#g-save-study.btn.btn-sm.btn-primary.save-button(type="submit", value="Save")
   p
   p.
     Provide a key and value to be inserted into the labels dictionary.

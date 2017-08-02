@@ -1,7 +1,8 @@
 select#selection.g-annotation-domain(style='height: 25px; width: 200px')
   #option(value='null') none
   each domain in domains
-    option(value=domain.value)= domain.key
+    option(value=domain)= domain
+    #option(value=domain.value)= domain.key
 button.g-annotation-domain.add-label(title="Add Label" style='width: 100px; height: 25px;') Add label
 p Labels to add:
 select#labels(size='5' style='width: 150px')
