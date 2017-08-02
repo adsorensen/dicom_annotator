@@ -22,5 +22,6 @@
 class PluginSettings:
     labelsDictionary = {
     'adam': 'john', 'sorensen': 1731,
-    'Blood': 'bloodval', 'Bone': 'boneval'
+    'Blood': 'bloodval', 'Bone': 'boneval',
+    'Cancer': 'good'
     }

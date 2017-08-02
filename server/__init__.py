@@ -22,7 +22,7 @@ def getAnnotationDomains(params):
     Description('Load the list of annotation domains')
 )
 def putAnnotationDomains(params):
-    ModelImporter.model('setting').set('annotation_domain_list', constants.PluginSettings.labelsDictionary)
+    return ModelImporter.model('setting').set('annotation_domain_list', constants.PluginSettings.labelsDictionary)
 
 
 def load(info):

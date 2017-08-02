@@ -13,18 +13,18 @@ var ConfigView = View.extend({
             event.preventDefault();
             var $key = $('#g-key-input').val();
             var $value = $('#g-value-input').val();
+            alert("hello");
             restRequest({
                 type: 'GET',
                 path: 'system/annotation_domains',
                 // data: {
                 //     list: JSON.stringify(['provenance.resources'])
                 // }
-            }).done(_.bind(function (resp) {
-                //this.render();
-                // this.$('#provenance.resources').val(
-                //     resp['provenance.resources']
-                // );
-            }, this));
+            }).done((resp) => {
+                var domains = resp;
+            });
+            alert(domains);
+            alert("done");
         }
     },
     initialize: function () {
