@@ -3,6 +3,7 @@ from girder.models.model_base import ValidationException
 from girder.api import access
 from girder.api.describe import autoDescribeRoute, Description
 from girder.utility.model_importer import ModelImporter
+from . import constants
 
 @setting_utilities.validator('annotation_domain_list')
 def _validateDefaultImage(doc):
@@ -14,15 +15,17 @@ def _validateDefaultImage(doc):
     Description('Return the list of annotation domains')
 )
 def getAnnotationDomains(params):
-    myDict = {'adam': 'hello', 'john': 8000}
-    return ModelImporter.model('setting').get('annotation_domain_list', default=myDict)
+    return ModelImporter.model('setting').get('annotation_domain_list', 
+        default=constants.PluginSettings.labelsDictionary)
 
 @access.public
 @autoDescribeRoute(
     Description('Load the list of annotation domains')
 )
 def putAnnotationDomains(params):
-    return ModelImporter.model('setting').get('annotation_domain_list', default=["hello"])
+    #myDict2 = {'other': 'stuff', 'sorensen': 1731}
+    return ModelImporter.model('setting').get('annotation_domain_list', 
+        default=constants.PluginSettings.labelsDictionary)
 
 
 def load(info):

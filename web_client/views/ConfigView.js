@@ -9,8 +9,10 @@ import ConfigViewTemplate from '../templates/configView.pug';
 
 var ConfigView = View.extend({
     events: {
-        'submit #g-provenance-form': function (event) {
+        'click .g-widget-metadata-save-button': function (event) {
             event.preventDefault();
+            var $key = $('#g-key-input').val();
+            var $value = $('#g-value-input').val();
             
         }
     },

@@ -1,12 +1,19 @@
 .g-config-breadcrumb-container
 p.g-annotator-description
-  | Input a study. This tag will be the metadata title for the labels added to the item.
+  | Input a study on this page. This tag will be the metadata title for the labels added to the item.
+  | Add a new label for metadata options. The label is a dictionary, key is the tag (or label) and value is 
+  | the PURL.
 form#g-annotator-form(role="form")
   .form-group
     label.control-label(for="annotator.resources") Study name
-    input#annotator.resources(
+    input#annotator.study(
       type="text", placeholder="Name of study...", style='width: 250px')
   p#g-provenance-error-message.g-validation-failed-message
   input.btn.btn-sm.btn-primary(type="submit", value="Save")
-
-
+  p
+  p.
+    Provide a key and value to be inserted into the labels dictionary.
+input#g-key-input.g-dict-key-input(type="text", value=key, placeholder="Key", style="width: 250px")
+input#g-value-input.g-dict-value-input(type="text", placeholder="Value", style="width: 450px")
+button.btn.btn-sm.btn-primary.g-widget-metadata-save-button(title="Accept")
+  i.icon-ok
