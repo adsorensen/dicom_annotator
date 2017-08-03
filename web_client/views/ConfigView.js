@@ -26,7 +26,24 @@ var ConfigView = View.extend({
         'click .save-button': function (event) {
             event.preventDefault();
             var $study = $('#annotator-study').val();
-            alert($study);
+            var list = [$study];
+            //alert(list);
+            restRequest({
+                path: 'system/annotation_studies',
+                //contentType: 'application/json',
+                //data: JSON.stringify($study),
+                data: ["test1", "test2", "TEST3"],
+                type: 'PUT',
+            }).done(_.bind(function (resp) {
+                alert(resp);
+                events.trigger('g:alert', {
+                    icon: 'ok',
+                    text: 'Study saved.',
+                    type: 'success',
+                    timeout: 4000
+                });
+            }));
+            $('#annotator-study').val("");
         }
     },
     initialize: function () {
