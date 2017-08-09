@@ -1,8 +1,14 @@
+p Select study: 
+  select#study-selection.g-annotation-domain(style='height: 25px; width: 200px')
+    option something
+    //-each domain in myStudies
+      //-option(value=domain)= domain
+p
 select#selection.g-annotation-domain(style='height: 25px; width: 200px')
-  #option(value='null') none
-  each domain in domains
-    option(value=domain)= domain
-    #option(value=domain.value)= domain.key
+  option(value='null') none
+  each domain2 in domains
+    //-option(value=domain2)= domain2
+    option(value=domain2.value)= domain2.key
 button.g-annotation-domain.add-label(title="Add Label" style='width: 100px; height: 25px;') Add label
 p Labels to add:
 select#labels(size='5' style='width: 150px')

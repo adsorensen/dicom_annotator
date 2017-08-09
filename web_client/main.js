@@ -21,6 +21,14 @@ wrap(DicomView, 'render', function (render) {
         }));
     });
 
+    restRequest({
+        path: '/system/annotation_studies'
+
+    }).done((resp) => {
+        this.$('.g-annotation-container').html(template({
+            myStudies: resp
+        }));
+    });
     return this;
 });
 
