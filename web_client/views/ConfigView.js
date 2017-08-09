@@ -9,33 +9,39 @@ import ConfigViewTemplate from '../templates/configView.pug';
 
 var ConfigView = View.extend({
     events: {
-        'click .g-widget-metadata-save-button': function (event) {
+        'click #domain-save': function (event) {
             event.preventDefault();
             var $key = $('#g-key-input').val();
             var $value = $('#g-value-input').val();
-            alert("hello");
             restRequest({
-                type: 'GET',
+                type: 'PUT',
                 path: 'system/annotation_domains',
+                data: {
+                    newDomainKey: $key,
+                    newDomainVal: $value
+                },
             }).done((resp) => {
                 var domains = resp;
+                events.trigger('g:alert', {
+                    icon: 'ok',
+                    text: 'Domain saved.',
+                    type: 'success',
+                    timeout: 4000
+                });
             });
-            alert(domains);
-            alert("done");
         },
         'click .save-button': function (event) {
             event.preventDefault();
             var $study = $('#annotator-study').val();
             var list = [$study];
-            //alert(list);
             restRequest({
                 path: 'system/annotation_studies',
                 //contentType: 'application/json',
-                //data: JSON.stringify($study),
-                data: ["test1", "test2", "TEST3"],
+                data: {
+                    studies: $study
+                },
                 type: 'PUT',
             }).done(_.bind(function (resp) {
-                alert(resp);
                 events.trigger('g:alert', {
                     icon: 'ok',
                     text: 'Study saved.',
