@@ -1,18 +1,17 @@
 import _ from 'underscore';
-
 import PluginConfigBreadcrumbWidget from 'girder/views/widgets/PluginConfigBreadcrumbWidget';
 import View from 'girder/views/View';
 import events from 'girder/events';
 import { restRequest } from 'girder/rest';
-
-import ConfigViewTemplate from '../templates/configView.pug';
+import template from '../templates/configView.pug';
+import '../stylesheets/configView.styl';
 
 var ConfigView = View.extend({
     events: {
         'click #domain-save': function (event) {
             event.preventDefault();
-            var $key = $('#g-key-input').val();
-            var $value = $('#g-value-input').val();
+            var $key = $('#key-input').val();
+            var $value = $('#value-input').val();
             restRequest({
                 type: 'PUT',
                 path: 'system/annotation_domains',
@@ -29,14 +28,15 @@ var ConfigView = View.extend({
                     timeout: 4000
                 });
             });
+            $('#key-input').val("");
+            $('#value-input').val("");
         },
-        'click .save-button': function (event) {
+        'click #save-study': function (event) {
             event.preventDefault();
             var $study = $('#annotator-study').val();
             var list = [$study];
             restRequest({
                 path: 'system/annotation_studies',
-                //contentType: 'application/json',
                 data: {
                     studies: $study
                 },
@@ -50,26 +50,51 @@ var ConfigView = View.extend({
                 });
             }));
             $('#annotator-study').val("");
+        },
+        'click #show-studies': function (event) {
+            var isVisible = $('#domain-list').is( ":visible" );
+            if (isVisible) {
+                $('#domain-list').toggle();
+            }
+            $('#study-list').toggle();
+            //$('.hidden').toggle();
+            //alert("i am here");
+        },
+        'click #show-domains': function (event) {
+            var isVisible = $('#study-list').is( ":visible" );
+            if (isVisible) {
+                $('#study-list').toggle();
+            }
+            $('#domain-list').toggle();
         }
     },
     initialize: function () {
+        // restRequest({
+        //     path: 'system/annotation_domains',
+        // }).done(_.bind(function (resp) {
+        //     this.render();
+        // }, this));
+
+        var domains;
         restRequest({
-            //type: 'GET',
-            path: 'system/annotation_domains',
-            // data: {
-            //     list: JSON.stringify(['provenance.resources'])
-            // }
-        }).done(_.bind(function (resp) {
+            path: '/system/annotation_domains'
+        }).then((domainResponse) => {
+            this.$('.g-config-breadcrumb-container').after('<div class=".g-study-list-container"></div>');
+            domains = domainResponse;
+            return restRequest({
+                path:'/system/annotation_studies'
+            });
+        }).done((studiesResponse) => {
+            this.$('.g-study-list-container').html(template({
+                domains: domains,
+                myStudies: studiesResponse
+            }));
             this.render();
-            // this.$('#provenance.resources').val(
-            //     resp['provenance.resources']
-            // );
-        }, this));
+        });
     },
 
     render: function () {
-        this.$el.html(ConfigViewTemplate());
-
+        this.$el.html(template());
         if (!this.breadcrumb) {
             this.breadcrumb = new PluginConfigBreadcrumbWidget({
                 pluginName: 'Dicom Annotator',

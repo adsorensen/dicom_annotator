@@ -49,18 +49,29 @@ DicomView.prototype.events['click .add-label'] = function (e) {
 
 // Event to handle when the user clicks the save labels button
 // Function will take all labels currently in the selection box
-// and add them to the girder item metadata
+// and add the value of them to the girder item metadata, which 
+// will have the tag of the study selected.
 DicomView.prototype.events['click .save-labels'] = function (e) {
     var labels = "";
     var $tag = $('#study-selection option:selected').text();
-    $("#labels > option").each(function() {
-        labels += this.value + ";\n";
-    });
-    labels = labels.slice(0, -2);
+    if( $('#labels').has('option').length == 0 ) {
+        alert("Please select at least one label from the dropdown.");
+    }
+    else {
+        $("#labels > option").each(function() {
+            labels += this.value + ";\n";
+        });
+        labels = labels.slice(0, -2);
 
-    this.item.editMetadata($tag, $tag, labels, () => {
-        this.item.trigger('g:changed');
-    });
+        this.item.editMetadata($tag, $tag, labels, () => {
+            this.item.trigger('g:changed');
+        });
+        $('#labels')
+            .find('option')
+            .remove()
+            .end()
+        ;
+    }
 }
 
 // Event to handle when the user clicks the remove label button

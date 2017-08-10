@@ -5,8 +5,11 @@ from girder.api.rest import Resource, filtermodel
 from girder.api.describe import autoDescribeRoute, Description
 from girder.utility.model_importer import ModelImporter
 
+# myStudies is a list of studies
 myStudies = []
+# myDomains is a dictionary, key is a label, value is a PURL
 myDomains = {}
+
 @setting_utilities.validator('annotation_domain_list')
 def _validateDefaultImage(doc):
     if not isinstance(doc['value'], dict):
@@ -44,7 +47,6 @@ def updateStudies(studies):
     if not studies in myStudies:
         myStudies.append(studies)
     return ModelImporter.model('setting').set('annotation_study_list', myStudies)
-    #return ModelImporter.model('setting').set('annotation_study_list', constants.PluginSettings.labelsList)
 
 @access.public
 @autoDescribeRoute(
