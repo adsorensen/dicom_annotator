@@ -19,7 +19,7 @@ def _validateDefaultImage(doc):
 def _validateDefaultImage(doc):
     if not isinstance(doc['value'], list):
         x = 5
-        # raise ValidationException('Annotation study list must be a list')
+        raise ValidationException('Annotation study list must be a list')
 
 @access.public
 @autoDescribeRoute(
