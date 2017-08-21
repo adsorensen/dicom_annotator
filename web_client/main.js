@@ -78,4 +78,20 @@ DicomView.prototype.events['click .save-labels'] = function (e) {
 // Function will remove the selected value from the selection box
 DicomView.prototype.events['click .remove-label'] = function (e) {
     $('#labels option:selected').remove();
+    var temp = "adfkl";
+    var count = 0;
+    restRequest({
+        method: 'GET',
+        path: '/system/annotation_studies'
+    }).done(_.bind(function (resp) {
+        temp = JSON.stringify(resp);
+        for (var t in temp)
+        {
+            if (temp.hasOwnProperty(t)) {
+                console.log(t + " -> " + temp[t]);
+            }
+        }
+        alert(temp);
+        alert(count);
+    }, this));
 }

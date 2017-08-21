@@ -5,6 +5,7 @@ import events from 'girder/events';
 import { restRequest } from 'girder/rest';
 import template from '../templates/configView.pug';
 import '../stylesheets/configView.styl';
+import '../routes';
 
 var ConfigView = View.extend({
     events: {
@@ -74,7 +75,7 @@ var ConfigView = View.extend({
         // }).done(_.bind(function (resp) {
         //     this.render();
         // }, this));
-
+        
         var domains;
         restRequest({
             path: '/system/annotation_domains'
@@ -86,11 +87,12 @@ var ConfigView = View.extend({
             });
         }).done((studiesResponse) => {
             this.$('.g-study-list-container').html(template({
-                domains: domains,
-                myStudies: studiesResponse
+                myStudies: studiesResponse,
+                domains: domains
             }));
-            this.render();
+            alert(studiesResponse);
         });
+        this.render();
     },
 
     render: function () {
