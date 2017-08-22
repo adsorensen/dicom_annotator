@@ -15,7 +15,7 @@ var ConfigView = View.extend({
             var $value = $('#value-input').val();
             restRequest({
                 type: 'PUT',
-                path: 'system/annotation_domains',
+                url: '/system/annotation_domains',
                 data: {
                     newDomainKey: $key,
                     newDomainVal: $value
@@ -34,19 +34,49 @@ var ConfigView = View.extend({
         },
         'click #save-study': function (event) {
             event.preventDefault();
-            var $study = $('#annotator-study').val();
-            var list = [$study];
+            var study = $('#annotator-study').val();
+            var list = [study];
+            //alert($study);
             restRequest({
-                path: 'system/annotation_studies',
+                url: 'system/annotation_studies',
                 data: {
-                    studies: $study
+                    studies: study
                 },
-                type: 'PUT',
+                type: 'POST',
+            // }).done(() => {
+            //     events.trigger('g:alert', {
+            //         icon: 'ok',
+            //         text: 'Study saved.',
+            //         type: 'success',
+            //         timeout: 4000
+            //     });
+            // });
             }).done(_.bind(function (resp) {
+                alert(resp);
                 events.trigger('g:alert', {
                     icon: 'ok',
                     text: 'Study saved.',
                     type: 'success',
+                    timeout: 4000
+                });
+            }));
+            $('#annotator-study').val("");
+        },
+        'click #delete-study': function (event) {
+            event.preventDefault();
+            var temp = $('#annotator-study').val();
+            restRequest({
+                url: 'system/annotation_studies',
+                data: {
+                    study: temp
+                },
+                type: 'DELETE',
+            }).done(_.bind(function (resp) {
+                alert(resp);
+                events.trigger('g:alert', {
+                    icon: 'ok',
+                    text: 'Deleted.',
+                    type: 'fail',
                     timeout: 4000
                 });
             }));
@@ -78,19 +108,19 @@ var ConfigView = View.extend({
         
         var domains;
         restRequest({
-            path: '/system/annotation_domains'
+            url: '/system/annotation_domains'
         }).then((domainResponse) => {
             this.$('.g-config-breadcrumb-container').after('<div class=".g-study-list-container"></div>');
             domains = domainResponse;
             return restRequest({
-                path:'/system/annotation_studies'
+                url: '/system/annotation_studies'
             });
         }).done((studiesResponse) => {
             this.$('.g-study-list-container').html(template({
                 myStudies: studiesResponse,
                 domains: domains
             }));
-            alert(studiesResponse);
+            //alert(studiesResponse);
         });
         this.render();
     },
