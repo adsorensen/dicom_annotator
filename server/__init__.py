@@ -6,9 +6,9 @@ from girder.api.describe import autoDescribeRoute, Description
 from girder.utility.model_importer import ModelImporter
 
 # myStudies is a list of studies
-myStudies = []
+
 # myDomains is a dictionary, key is a label, value is a PURL
-myDomains = {}
+
 
 @setting_utilities.validator('annotation_domain_list')
 def _validateDefaultImage(doc):
@@ -18,14 +18,13 @@ def _validateDefaultImage(doc):
 @setting_utilities.validator('annotation_study_list')
 def _validateDefaultImage(doc):
     if not isinstance(doc['value'], list):
-        x = 5
         raise ValidationException('Annotation study list must be a list')
 
 @access.public
 @autoDescribeRoute(
     Description('Return the list of annotation domains')
 )
-def getAnnotationDomains(params):
+def getAnnotationDomains():
     return ModelImporter.model('setting').get('annotation_domain_list', default=[])
 
 @access.public
@@ -35,6 +34,8 @@ def getAnnotationDomains(params):
     .param('newDomainVal', 'New domain value', dataType='string', required=False)
 )
 def putAnnotationDomains(newDomainKey, newDomainVal):
+    #myDomains = {}
+    myDomains = getAnnotationDomains()
     myDomains[newDomainKey] = newDomainVal
     return ModelImporter.model('setting').set('annotation_domain_list', myDomains)
 
@@ -44,6 +45,8 @@ def putAnnotationDomains(newDomainKey, newDomainVal):
     .param('studies', 'The input of studies.', dataType='string', required=False)
 )
 def updateStudies(studies):
+    #myStudies = []
+    myStudies = getAnnotationStudies()
     if not studies in myStudies:
         myStudies.append(studies)
     return ModelImporter.model('setting').set('annotation_study_list', myStudies)
@@ -52,11 +55,23 @@ def updateStudies(studies):
 @autoDescribeRoute(
     Description('Get the list of annotation studies')
 )
-def getAnnotationStudies(params):
+def getAnnotationStudies():
     return ModelImporter.model('setting').get('annotation_study_list', default=[])
+
+@access.public
+@autoDescribeRoute(
+    Description('Delete a single study from annotation studies')
+    .param('study', 'The study to be deleted', dataType='string', required=False)
+)
+def deleteAnnotationStudy(study):
+    myStudies = getAnnotationStudies()
+    if study in myStudies:
+        myStudies.remove(study)
+    return ModelImporter.model('setting').set('annotation_study_list', myStudies)
 
 def load(info):
     info['apiRoot'].system.route('GET', ('annotation_domains',), getAnnotationDomains)
     info['apiRoot'].system.route('PUT', ('annotation_domains',), putAnnotationDomains)
     info['apiRoot'].system.route('PUT', ('annotation_studies',), updateStudies)
     info['apiRoot'].system.route('GET', ('annotation_studies',), getAnnotationStudies)
+    info['apiRoot'].system.route('DELETE', ('annotation_studies',), deleteAnnotationStudy)
