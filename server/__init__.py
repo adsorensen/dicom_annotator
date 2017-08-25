@@ -1,14 +1,9 @@
 from girder.utility import setting_utilities
 from girder.models.model_base import ValidationException
 from girder.api import access
-from girder.api.rest import Resource, filtermodel
+from girder.api.rest import Resource, filtermodel, RestException
 from girder.api.describe import autoDescribeRoute, Description
 from girder.utility.model_importer import ModelImporter
-
-# myStudies is a list of studies
-
-# myDomains is a dictionary, key is a label, value is a PURL
-
 
 @setting_utilities.validator('annotation_domain_list')
 def _validateDefaultImage(doc):
@@ -34,7 +29,6 @@ def getAnnotationDomains():
     .param('newDomainVal', 'New domain value', dataType='string', required=False)
 )
 def putAnnotationDomains(newDomainKey, newDomainVal):
-    #myDomains = {}
     myDomains = getAnnotationDomains()
     myDomains[newDomainKey] = newDomainVal
     return ModelImporter.model('setting').set('annotation_domain_list', myDomains)
@@ -45,11 +39,12 @@ def putAnnotationDomains(newDomainKey, newDomainVal):
     .param('studies', 'The input of studies.', dataType='string', required=False)
 )
 def updateStudies(studies):
-    #myStudies = []
     myStudies = getAnnotationStudies()
     if not studies in myStudies:
         myStudies.append(studies)
-    return ModelImporter.model('setting').set('annotation_study_list', myStudies)
+        return ModelImporter.model('setting').set('annotation_study_list', myStudies)
+    else:
+        return "already exists"
 
 @access.public
 @autoDescribeRoute(
@@ -67,7 +62,10 @@ def deleteAnnotationStudy(study):
     myStudies = getAnnotationStudies()
     if study in myStudies:
         myStudies.remove(study)
-    return ModelImporter.model('setting').set('annotation_study_list', myStudies)
+        return ModelImporter.model('setting').set('annotation_study_list', myStudies)
+    else:
+        #raise RestException('The study %s does not exist.' % study, code=401)
+        return "no study found"
 
 def load(info):
     info['apiRoot'].system.route('GET', ('annotation_domains',), getAnnotationDomains)

@@ -35,52 +35,76 @@ var ConfigView = View.extend({
         'click #save-study': function (event) {
             event.preventDefault();
             var study = $('#annotator-study').val();
-            var list = [study];
-            //alert($study);
-            restRequest({
-                url: 'system/annotation_studies',
-                data: {
-                    studies: study
-                },
-                type: 'POST',
-            // }).done(() => {
-            //     events.trigger('g:alert', {
-            //         icon: 'ok',
-            //         text: 'Study saved.',
-            //         type: 'success',
-            //         timeout: 4000
-            //     });
-            // });
-            }).done(_.bind(function (resp) {
-                alert(resp);
+            if (study == "") {
                 events.trigger('g:alert', {
-                    icon: 'ok',
-                    text: 'Study saved.',
-                    type: 'success',
-                    timeout: 4000
+                    text: 'Please input a study name.',
+                    type: 'warning',
+                    timeout: 5000
                 });
-            }));
-            $('#annotator-study').val("");
+            }
+            else
+            {
+                restRequest({
+                    url: 'system/annotation_studies',
+                    data: {
+                        studies: study
+                    },
+                    type: 'PUT',
+                }).done(_.bind(function (resp) {
+                    if (resp == "already exists") {
+                        events.trigger('g:alert', {
+                            text: study + ' already exists.',
+                            type: 'warning',
+                            timeout: 4000
+                        });
+                    }
+                    else {
+                        events.trigger('g:alert', {
+                            icon: 'ok',
+                            text: study + ' saved.',
+                            type: 'success',
+                            timeout: 4000
+                        });
+                    }
+                }));
+                $('#annotator-study').val("");
+            }
         },
         'click #delete-study': function (event) {
             event.preventDefault();
             var temp = $('#annotator-study').val();
-            restRequest({
-                url: 'system/annotation_studies',
-                data: {
-                    study: temp
-                },
-                type: 'DELETE',
-            }).done(_.bind(function (resp) {
-                alert(resp);
+            if (temp == "") {
                 events.trigger('g:alert', {
-                    icon: 'ok',
-                    text: 'Deleted.',
-                    type: 'fail',
-                    timeout: 4000
+                    text: 'Please input a study name.',
+                    type: 'warning',
+                    timeout: 5000
                 });
-            }));
-            $('#annotator-study').val("");
+            }
+            else {
+                restRequest({
+                    url: 'system/annotation_studies',
+                    data: {
+                        study: temp
+                    },
+                    type: 'DELETE',
+                }).done(_.bind(function (resp) {
+                    if (resp == "no study found")
+                        events.trigger('g:alert', {
+                            text: temp + ' does not exist.',
+                            type: 'warning',
+                            timeout: 4000
+                        });
+                    else
+                        events.trigger('g:alert', {
+                            icon: 'ok',
+                            text: temp + ' was deleted.',
+                            type: 'success',
+                            timeout: 4000
+                        });
+                }));
+                $('#annotator-study').val("");
+            }
+            
         },
         'click #show-studies': function (event) {
             var isVisible = $('#domain-list').is( ":visible" );
@@ -120,9 +144,10 @@ var ConfigView = View.extend({
                 myStudies: studiesResponse,
                 domains: domains
             }));
+            this.render();
             //alert(studiesResponse);
         });
-        this.render();
+        //this.render();
     },
 
     render: function () {
