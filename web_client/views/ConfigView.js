@@ -148,7 +148,7 @@ var ConfigView = View.extend({
         restRequest({
             url: '/system/annotation_domains'
         }).then((domainResponse) => {
-            this.$('.g-config-breadcrumb-container').after('<div class=".g-study-list-container"></div>');
+            this.$('.g-config-show-info').after('<div class=".g-study-list-container"></div>');
             domains = domainResponse;
             return restRequest({
                 url: '/system/annotation_studies'
