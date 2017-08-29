@@ -107,13 +107,27 @@ var ConfigView = View.extend({
             
         },
         'click #show-studies': function (event) {
+            var domains;
+            restRequest({
+                url: '/system/annotation_domains'
+            }).then((domainResponse) => {
+                this.$('.g-config-show-info').after('<div class=".g-study-list-container"></div>');
+                domains = domainResponse;
+                return restRequest({
+                    url: '/system/annotation_studies'
+                });
+            }).done((studiesResponse) => {
+                this.$('.g-study-list-container').html(template({
+                    myStudies: studiesResponse,
+                    domains: domains
+                }));
+                alert(studiesResponse);
+            });
             var isVisible = $('#domain-list').is( ":visible" );
             if (isVisible) {
                 $('#domain-list').toggle();
             }
             $('#study-list').toggle();
-            //$('.hidden').toggle();
-            //alert("i am here");
         },
         'click #show-domains': function (event) {
             var isVisible = $('#study-list').is( ":visible" );
