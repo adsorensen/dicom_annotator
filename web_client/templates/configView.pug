@@ -15,11 +15,11 @@ form#g-annotator-form(role="form")
 input#key-input.g-dict-key-input(type="text", value=key, placeholder="Key", style="width: 250px")
 input#value-input.g-dict-value-input(type="text", placeholder="Value", style="width: 450px")
 input#domain-save.btn.btn-sm.btn-primary.save-button(type="submit", value="Save Domain")
+input#domain-delete.btn.btn-sm.btn-primary.save-button(type="submit", value="Delete Domain")
 p
 button#show-studies.btn.btn-sm(title="show studies") Show Studies
 button#show-domains.btn.btn-sm(title="show domains") Show Domain Labels
 p
-.g-config-show-info
 select#study-list(size='8' style='width: 250px' type: 'hidden')
   option study list placeholder
   //-each domain in myStudies
