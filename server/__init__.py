@@ -28,7 +28,7 @@ def getAnnotationDomains():
     .param('newDomainKey', 'New domain key value', dataType='string', required=False)
     .param('newDomainVal', 'New domain value', dataType='string', required=False)
 )
-def putAnnotationDomains(newDomainKey, newDomainVal):
+def updateAnnotationDomains(newDomainKey, newDomainVal):
     myDomains = getAnnotationDomains()
     myDomains[newDomainKey] = newDomainVal
     return ModelImporter.model('setting').set('annotation_domain_list', myDomains)
@@ -64,12 +64,26 @@ def deleteAnnotationStudy(study):
         myStudies.remove(study)
         return ModelImporter.model('setting').set('annotation_study_list', myStudies)
     else:
-        #raise RestException('The study %s does not exist.' % study, code=401)
         return "no study found"
+
+@access.public
+@autoDescribeRoute(
+    Description('Delete a domain key and value from the system')
+    .param('domainKey', 'The domain key to be deleted', dataType='string', required=False)
+)
+def deleteAnnotationDomain(domainKey):
+    myDomains = getAnnotationDomains()
+    if domainKey in myDomains:
+        myDomains.pop(domainKey, None)
+        return ModelImporter.model('setting').set('annotation_domain_list', myDomains)
+    else:
+        return "key not found"
+
 
 def load(info):
     info['apiRoot'].system.route('GET', ('annotation_domains',), getAnnotationDomains)
-    info['apiRoot'].system.route('PUT', ('annotation_domains',), putAnnotationDomains)
+    info['apiRoot'].system.route('PUT', ('annotation_domains',), updateAnnotationDomains)
     info['apiRoot'].system.route('PUT', ('annotation_studies',), updateStudies)
     info['apiRoot'].system.route('GET', ('annotation_studies',), getAnnotationStudies)
     info['apiRoot'].system.route('DELETE', ('annotation_studies',), deleteAnnotationStudy)
+    info['apiRoot'].system.route('DELETE', ('annotation_domains',), deleteAnnotationDomain)
