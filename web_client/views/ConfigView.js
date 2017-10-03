@@ -30,7 +30,7 @@ var ConfigView = View.extend({
             else {
                 restRequest({
                     type: 'PUT',
-                    url: '/system/annotation_domains',
+                    path: '/system/annotation_domains',
                     data: {
                         newDomainKey: $key,
                         newDomainVal: $value
@@ -62,7 +62,7 @@ var ConfigView = View.extend({
             else {
                 restRequest({
                     type: 'DELETE',
-                    url: '/system/annotation_domains',
+                    path: '/system/annotation_domains',
                     data: {
                         domainKey: $key
                     },
@@ -90,6 +90,7 @@ var ConfigView = View.extend({
         'click #save-study': function (event) {
             event.preventDefault();
             var study = $('#annotator-study').val();
+            //alert("hello");
             if (study == "") {
                 events.trigger('g:alert', {
                     text: 'Please input a study name.',
@@ -100,7 +101,7 @@ var ConfigView = View.extend({
             else
             {
                 restRequest({
-                    url: 'system/annotation_studies',
+                    path: 'system/annotation_studies',
                     data: {
                         studies: study
                     },
@@ -137,7 +138,7 @@ var ConfigView = View.extend({
             }
             else {
                 restRequest({
-                    url: 'system/annotation_studies',
+                    path: 'system/annotation_studies',
                     data: {
                         study: studyToRemove
                     },
@@ -163,12 +164,13 @@ var ConfigView = View.extend({
         'click #show-studies': function (event) {
             var domaintemp;
             restRequest({
-                url: '/system/annotation_domains'
+                path: '/system/annotation_domains'
             }).then((domainResponse) => {
                 this.$('.g-app-footer-container').before('<div class=".g-study-list-container"></div>');
+                //this.$('.g-config-show-info').after('<div class=".g-study-list-container"></div>');
                 domaintemp = domainResponse;
                 return restRequest({
-                    url: '/system/annotation_studies'
+                    path: '/system/annotation_studies'
                 });
             }).done((studiesResponse) => {
                 this.$('.g-study-list-container').html(template({
@@ -192,25 +194,29 @@ var ConfigView = View.extend({
     },
     initialize: function () {
         var domains;
+        this.render();
+    },
+
+    render: function () {
+        var domains;
         restRequest({
-            url: '/system/annotation_domains'
+            path: '/system/annotation_domains'
         }).then((domainResponse) => {
-            this.$('.g-app-footer-container').before('<div class=".g-study-list-container"></div>');
+            //this.$('.g-app-footer-container').before('<div class=".g-study-list-container"></div>');
+            this.$('.g-config-show-info').after('<div class=".g-study-list-container"></div>');
             domains = domainResponse;
             return restRequest({
-                url: '/system/annotation_studies'
+                path: '/system/annotation_studies'
             });
         }).done((studiesResponse) => {
             this.$('.g-study-list-container').html(template({
                 myStudies: studiesResponse,
                 domains: domains
             }));
-            this.render();
+            //alert(typeof(domains));
         });
-    },
 
-    render: function () {
-        this.$el.html(template());
+        this.$el.html(template(domains));
         if (!this.breadcrumb) {
             this.breadcrumb = new PluginConfigBreadcrumbWidget({
                 pluginName: 'Dicom Annotator',

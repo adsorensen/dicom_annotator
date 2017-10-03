@@ -1,30 +1,31 @@
 .g-config-breadcrumb-container
 .g-annotator-config
-p.g-annotator-config.annotator-description
-  | Input a study on this page. This tag will be the metadata title for the labels added to the item.
-  | Add a new label for metadata options. The label is a dictionary, key is the tag (or label) and value is 
-  | the PURL.
-form#g-annotator-form(role="form")
-  .form-group
-    label.control-label(for="annotator.resources") Study name
-    input#annotator-study(type="text", placeholder="Name of study...", style='width: 250px')
-    input#save-study.btn.btn-sm.btn-primary.save-button(type="submit", value="Save Study")
-    input#delete-study.btn.btn-sm.btn-primary(type="submit", value="Delete Study", color="red")
-  p.
-    Provide a key and value to be inserted into the labels dictionary.
-input#key-input.g-dict-key-input(type="text", value=key, placeholder="Key", style="width: 250px")
-input#value-input.g-dict-value-input(type="text", placeholder="Value", style="width: 450px")
-input#domain-save.btn.btn-sm.btn-primary.save-button(type="submit", value="Save Domain")
-input#domain-delete.btn.btn-sm.btn-primary.save-button(type="submit", value="Delete Domain")
-p
-button#show-studies.btn.btn-sm(title="show studies") Show Studies
-button#show-domains.btn.btn-sm(title="show domains") Show Domain Labels
-p
-select#study-list(size='8' style='width: 250px' type: 'hidden')
-  option study list placeholder
-  //-each domain in myStudies
-    //-option(value=domain)= domain
-select#domain-list(size='8' style='width: 250px' type: 'hidden')
-  option domain list placeholder
-  //-each val, key in domains
-    //-option(value=val)= key
+  p.g-annotator-config.annotator-description
+    | Input a study on this page. This tag will be the metadata title for the labels added to the item.
+    | Add a new label for metadata options. The label is a dictionary, key is the tag (or label) and value is 
+    | the PURL.
+  form#g-annotator-form(role="form")
+    .form-group
+      label.control-label(for="annotator.resources") Study name
+      input#annotator-study(type="text", placeholder="Name of study...", style='width: 250px')
+      input#save-study.btn.btn-sm.btn-primary.save-button(type="submit", value="Save Study")
+      input#delete-study.btn.btn-sm.btn-primary(type="submit", value="Delete Study", color="red")
+    p.
+      Provide a key and value to be inserted into the labels dictionary.
+  input#key-input.g-dict-key-input(type="text", value=key, placeholder="Key", style="width: 250px")
+  input#value-input.g-dict-value-input(type="text", placeholder="Value", style="width: 450px")
+  input#domain-save.btn.btn-sm.btn-primary.save-button(type="submit", value="Save Domain")
+  input#domain-delete.btn.btn-sm.btn-primary.save-button(type="submit", value="Delete Domain")
+  p
+  button#show-studies.btn.btn-sm(title="show studies") Show Studies
+  button#show-domains.btn.btn-sm(title="show domains") Show Domain Labels
+  .g-config-show-info
+  p
+  select#domain-list(size='8' style='width: 250px' type: 'hidden')
+    option domain list placeholder
+    //-each val, key in domains
+      //-option(value=val)= key
+  select#study-list(size='8' style='width: 250px' type: 'hidden')
+    option study list placeholder
+    //-each domain in myStudies
+      //-option(value=domain)= domain
