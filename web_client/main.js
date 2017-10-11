@@ -23,30 +23,34 @@ wrap(DicomView, 'render', function (render) {
     //         myStudies: studiesResponse
     //     }));
     // });
-    // restRequest({
-    //     path: '/system/annotation_domains'
-    // }).then((domainResponse) => {
-    //     this.$('.g-dicom-panes').before('<div class="g-annotation-container"></div>');
-    //     domains = domainResponse;
-    //     return restRequest({
-    //         path:'/system/annotation_studies'
-    //     });
-    // }).done((studiesResponse) => {
-    //     this.$('.g-annotation-container').html(template({
-    //         domains: domains,
-    //         myStudies: studiesResponse
-    //     }));
-    // });
-
-
     restRequest({
-        path: '/system/annotation_domains'
-    }).done((resp) => {
+        path: '/system/annotation_domains',
+    }).then((domainResponse) => {
         this.$('.g-dicom-panes').before('<div class="g-annotation-container"></div>');
+        domains = domainResponse;
+        return restRequest({
+            path:'/system/annotation_labels',
+            data: {
+                study: ''
+            },
+            type: 'GET',
+        });
+    }).done((studiesResponse) => {
         this.$('.g-annotation-container').html(template({
-            domains: resp
+            domains: domains,
+            myStudies: studiesResponse
         }));
     });
+
+
+    // restRequest({
+    //     path: '/system/annotation_domains'
+    // }).done((resp) => {
+    //     this.$('.g-dicom-panes').before('<div class="g-annotation-container"></div>');
+    //     this.$('.g-annotation-container').html(template({
+    //         domains: resp
+    //     }));
+    // });
     return this;
 });
 
@@ -98,6 +102,31 @@ DicomView.prototype.events['click .save-labels'] = function (e) {
     }
 }
 
+
+DicomView.prototype.events['change #study-selection'] = function (e) {
+    var $tag = $('#study-selection option:selected').text();
+    var domains;
+    restRequest({
+        path: '/system/annotation_domains',
+    }).then((domainResponse) => {
+        domains = domainResponse;
+        return restRequest({
+            path:'/system/annotation_labels',
+            data: {
+                study: $tag
+            },
+            type: 'GET',
+        });
+    }).done((studiesResponse) => {
+        this.$('.g-annotation-container').html(template({
+            domains: domains,
+            myStudies: studiesResponse
+        }));
+        $("#study-selection").val($tag);
+    });
+    
+}
+
 // Event to handle when the user clicks the remove label button
 // Function will remove the selected value from the selection box
 DicomView.prototype.events['click .remove-label'] = function (e) {
@@ -115,7 +144,7 @@ DicomView.prototype.events['click .remove-label'] = function (e) {
                 console.log(t + " -> " + temp[t]);
             }
         }
-        alert(temp);
-        alert(count);
+        //alert(temp);
+        //alert(count);
     }, this));
 }

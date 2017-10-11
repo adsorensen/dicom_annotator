@@ -13,6 +13,7 @@ var ConfigView = View.extend({
             event.preventDefault();
             var $key = $('#key-input').val();
             var $value = $('#value-input').val();
+            var $study = $('#annotator-study').val();
             if ($key == "") {
                 events.trigger('g:alert', {
                     text: 'Please enter some text for the key.',
@@ -32,14 +33,15 @@ var ConfigView = View.extend({
                     type: 'PUT',
                     path: '/system/annotation_domains',
                     data: {
-                        newDomainKey: $key,
-                        newDomainVal: $value
+                        study: $study,
+                        newKey: $key,
+                        newVal: $value
                     },
                 }).done((resp) => {
                     //var domains = resp;
                     events.trigger('g:alert', {
                         icon: 'ok',
-                        text: 'Domain saved.',
+                        text: 'Domain saved into study.',
                         type: 'success',
                         timeout: 4000
                     });
@@ -52,6 +54,7 @@ var ConfigView = View.extend({
             event.preventDefault();
             var $key = $('#key-input').val();
             var $value = $('value-input').val();
+            var $study = $('#annotator-study').val();
             if ($key == "") {
                 events.trigger('g:alert', {
                     text: 'Please enter some text for the key.',
@@ -64,6 +67,7 @@ var ConfigView = View.extend({
                     type: 'DELETE',
                     path: '/system/annotation_domains',
                     data: {
+                        study: $study,
                         domainKey: $key
                     },
                 }).done((resp) => {
@@ -138,7 +142,7 @@ var ConfigView = View.extend({
             }
             else {
                 restRequest({
-                    path: 'system/annotation_studies',
+                    path: 'system/annotation_labels',
                     data: {
                         study: studyToRemove
                     },
@@ -170,7 +174,7 @@ var ConfigView = View.extend({
                 //this.$('.g-config-show-info').after('<div class=".g-study-list-container"></div>');
                 domaintemp = domainResponse;
                 return restRequest({
-                    path: '/system/annotation_studies'
+                    path: '/system/annotation_labels'
                 });
             }).done((studiesResponse) => {
                 this.$('.g-study-list-container').html(template({
@@ -206,7 +210,7 @@ var ConfigView = View.extend({
             this.$('.g-config-show-info').after('<div class=".g-study-list-container"></div>');
             domains = domainResponse;
             return restRequest({
-                path: '/system/annotation_studies'
+                path: '/system/annotation_labels'
             });
         }).done((studiesResponse) => {
             this.$('.g-study-list-container').html(template({
