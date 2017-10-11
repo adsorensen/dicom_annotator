@@ -9,18 +9,42 @@ import View from 'girder/views/View';
 wrap(DicomView, 'render', function (render) {
     render.call(this);
     var domains;
+    // restRequest({
+    //     path: '/system/annotation_domains'
+    // }).then((domainResponse) => {
+    //     this.$('.g-dicom-panes').before('<div class="g-annotation-container"></div>');
+    //     domains = domainResponse;
+    //     return restRequest({
+    //         path:'/system/annotation_studies'
+    //     });
+    // }).done((studiesResponse) => {
+    //     this.$('.g-annotation-container').html(template({
+    //         domains: domains,
+    //         myStudies: studiesResponse
+    //     }));
+    // });
+    // restRequest({
+    //     path: '/system/annotation_domains'
+    // }).then((domainResponse) => {
+    //     this.$('.g-dicom-panes').before('<div class="g-annotation-container"></div>');
+    //     domains = domainResponse;
+    //     return restRequest({
+    //         path:'/system/annotation_studies'
+    //     });
+    // }).done((studiesResponse) => {
+    //     this.$('.g-annotation-container').html(template({
+    //         domains: domains,
+    //         myStudies: studiesResponse
+    //     }));
+    // });
+
+
     restRequest({
         path: '/system/annotation_domains'
-    }).then((domainResponse) => {
+    }).done((resp) => {
         this.$('.g-dicom-panes').before('<div class="g-annotation-container"></div>');
-        domains = domainResponse;
-        return restRequest({
-            path:'/system/annotation_studies'
-        });
-    }).done((studiesResponse) => {
         this.$('.g-annotation-container').html(template({
-            domains: domains,
-            myStudies: studiesResponse
+            domains: resp
         }));
     });
     return this;
