@@ -1,6 +1,7 @@
 import _ from 'underscore';
 import PluginConfigBreadcrumbWidget from 'girder/views/widgets/PluginConfigBreadcrumbWidget';
 import View from 'girder/views/View';
+import { confirm } from 'girder/dialog';
 import events from 'girder/events';
 import { restRequest } from 'girder/rest';
 import template from '../templates/configView.pug';
@@ -28,6 +29,13 @@ var ConfigView = View.extend({
                     timeout: 5000
                 });
             }
+            else if ($study == "") {
+                events.trigger('g:alert', {
+                    text: 'Please enter a study. ', 
+                    type: 'warning',
+                    timeout: 5000
+                });
+            }
             else {
                 restRequest({
                     type: 'PUT',
@@ -35,10 +43,9 @@ var ConfigView = View.extend({
                     data: {
                         study: $study,
                         newKey: $key,
-                        newVal: $value
+                        newValue: $value
                     },
                 }).done((resp) => {
-                    //var domains = resp;
                     events.trigger('g:alert', {
                         icon: 'ok',
                         text: 'Domain saved into study.',
@@ -55,13 +62,46 @@ var ConfigView = View.extend({
             var $key = $('#key-input').val();
             var $value = $('value-input').val();
             var $study = $('#annotator-study').val();
-            if ($key == "") {
+            if ($study == "") {
                 events.trigger('g:alert', {
-                    text: 'Please enter some text for the key.',
+                    text: 'Please enter a study.',
                     type: 'warning',
                     timeout: 5000
                 });
             }
+            else if ($key == "") {
+                confirm({
+                    text: 'You are about to delete an entire study ' +
+                        'with all of it\'s labels. Proceed?',
+                    yesText: 'Delete study',
+                    confirmCallback: () => {
+                        restRequest({
+                            path: 'system/annotation_domains',
+                            data: {
+                                study: $study,
+                                domainKey: ''
+                            },
+                            type: 'DELETE',
+                        }).done(_.bind(function (resp) {
+                            if (resp == "study not found")
+                                events.trigger('g:alert', {
+                                    text: $study + ' does not exist.',
+                                    type: 'warning',
+                                    timeout: 4000
+                                });
+                            else
+                                events.trigger('g:alert', {
+                                    icon: 'ok',
+                                    text: $study + ' was deleted.',
+                                    type: 'success',
+                                    timeout: 4000
+                                });
+                        }));
+                        $('#annotator-study').val('');
+                    }
+                });
+            }
+
             else {
                 restRequest({
                     type: 'DELETE',
@@ -71,17 +111,24 @@ var ConfigView = View.extend({
                         domainKey: $key
                     },
                 }).done((resp) => {
-                    if (resp == "key not found") {
+                    if (resp == "study not found") {
                         events.trigger('g:alert', {
-                            text: 'Domain key was not found.',
+                            text: 'The study was not found.',
                             type: 'warning',
                             timeout: 4000
+                        })
+                    }
+                    else if (resp == "domain key not found in the study.") {
+                        events.trigger('g:alert', {
+                            text: 'The label key was not found in the study.',
+                            type: 'warning',
+                            timout: 4000
                         })
                     }
                     else {
                         events.trigger('g:alert', {
                             icon: 'ok',
-                            text: 'Domain deleted.',
+                            text: 'Domain deleted from the study.',
                             type: 'success',
                             timeout: 4000
                         });
@@ -93,9 +140,9 @@ var ConfigView = View.extend({
         },
         'click #save-study': function (event) {
             event.preventDefault();
-            var study = $('#annotator-study').val();
+            var studyToAdd = $('#annotator-study').val();
             //alert("hello");
-            if (study == "") {
+            if (studyToAdd == "") {
                 events.trigger('g:alert', {
                     text: 'Please input a study name.',
                     type: 'warning',
@@ -105,15 +152,17 @@ var ConfigView = View.extend({
             else
             {
                 restRequest({
-                    path: 'system/annotation_studies',
+                    path: 'system/annotation_domains',
                     data: {
-                        studies: study
+                        study: studyToAdd,
+                        newKey: '',
+                        newValue: ''
                     },
                     type: 'PUT',
                 }).done(_.bind(function (resp) {
                     if (resp == "already exists") {
                         events.trigger('g:alert', {
-                            text: study + ' already exists.',
+                            text: studyToAdd + ' already exists.',
                             type: 'warning',
                             timeout: 4000
                         });
@@ -121,7 +170,7 @@ var ConfigView = View.extend({
                     else {
                         events.trigger('g:alert', {
                             icon: 'ok',
-                            text: study + ' saved.',
+                            text: studyToAdd + ' has been saved.',
                             type: 'success',
                             timeout: 4000
                         });
@@ -132,8 +181,8 @@ var ConfigView = View.extend({
         },
         'click #delete-study': function (event) {
             event.preventDefault();
-            var studyToRemove = $('#annotator-study').val();
-            if (studyToRemove == "") {
+            var $study = $('#annotator-study').val();
+            if ($study == "") {
                 events.trigger('g:alert', {
                     text: 'Please input a study name.',
                     type: 'warning',
@@ -141,28 +190,36 @@ var ConfigView = View.extend({
                 });
             }
             else {
-                restRequest({
-                    path: 'system/annotation_labels',
-                    data: {
-                        study: studyToRemove
-                    },
-                    type: 'DELETE',
-                }).done(_.bind(function (resp) {
-                    if (resp == "no study found")
-                        events.trigger('g:alert', {
-                            text: studyToRemove + ' does not exist.',
-                            type: 'warning',
-                            timeout: 4000
-                        });
-                    else
-                        events.trigger('g:alert', {
-                            icon: 'ok',
-                            text: studyToRemove + ' was deleted.',
-                            type: 'success',
-                            timeout: 4000
-                        });
-                }));
-                $('#annotator-study').val("");
+                confirm({
+                    text: 'You are about to delete an entire study ' +
+                        'with all of it\'s labels. Proceed?',
+                    yesText: 'Delete study',
+                    confirmCallback: () => {
+                        restRequest({
+                            path: 'system/annotation_domains',
+                            data: {
+                                study: $study,
+                                domainKey: ''
+                            },
+                            type: 'DELETE',
+                        }).done(_.bind(function (resp) {
+                            if (resp == "study not found")
+                                events.trigger('g:alert', {
+                                    text: $study + ' does not exist.',
+                                    type: 'warning',
+                                    timeout: 4000
+                                });
+                            else
+                                events.trigger('g:alert', {
+                                    icon: 'ok',
+                                    text: $study + ' was deleted.',
+                                    type: 'success',
+                                    timeout: 4000
+                                });
+                        }));
+                        $('#annotator-study').val('');
+                    }
+                });
             }
         },
         'click #show-studies': function (event) {
@@ -171,7 +228,6 @@ var ConfigView = View.extend({
                 path: '/system/annotation_domains'
             }).then((domainResponse) => {
                 this.$('.g-app-footer-container').before('<div class=".g-study-list-container"></div>');
-                //this.$('.g-config-show-info').after('<div class=".g-study-list-container"></div>');
                 domaintemp = domainResponse;
                 return restRequest({
                     path: '/system/annotation_labels'
@@ -194,7 +250,10 @@ var ConfigView = View.extend({
                 $('#study-list').toggle();
             }
             $('#domain-list').toggle();
-        }
+        }, 
+        deleteStudy: function () {
+            alert('howdy');
+        },
     },
     initialize: function () {
         var domains;
@@ -217,7 +276,6 @@ var ConfigView = View.extend({
                 myStudies: studiesResponse,
                 domains: domains
             }));
-            //alert(typeof(domains));
         });
 
         this.$el.html(template(domains));
@@ -228,8 +286,36 @@ var ConfigView = View.extend({
                 parentView: this
             }).render();
         }
-
         return this;
+    },
+
+    deleteStudy: function (study) {
+        restRequest({
+            type: 'DELETE',
+            path: '/system/annotation_domains',
+            data: {
+                study: study,
+                domainKey: ''
+            },
+        }).done((resp) => {
+            if (resp == "study not found") {
+                events.trigger('g:alert', {
+                    text: 'Study was not found.',
+                    type: 'warning',
+                    timeout: 4000
+                })
+            }
+            else {
+                events.trigger('g:alert', {
+                    icon: 'ok',
+                    text: 'Domain deleted from the study.',
+                    type: 'success',
+                    timeout: 4000
+                });
+                $('#key-input').val("");
+                $('#value-input').val("");
+            }
+        });
     },
 
     // _saveSettings: function (settings) {
