@@ -24,14 +24,15 @@ wrap(DicomView, 'render', function (render) {
     //     }));
     // });
     restRequest({
-        path: '/system/annotation_domains',
+        url: '/system/annotation_domains',
     }).then((domainResponse) => {
         this.$('.g-dicom-panes').before('<div class="g-annotation-container"></div>');
         domains = domainResponse;
+        var firstStudy = Object.keys(domains)[0];
         return restRequest({
-            path:'/system/annotation_labels',
+            url:'/system/annotation_labels',
             data: {
-                study: ''
+                study: firstStudy
             },
             type: 'GET',
         });
@@ -107,11 +108,11 @@ DicomView.prototype.events['change #study-selection'] = function (e) {
     var $tag = $('#study-selection option:selected').text();
     var domains;
     restRequest({
-        path: '/system/annotation_domains',
+        url: '/system/annotation_domains',
     }).then((domainResponse) => {
         domains = domainResponse;
         return restRequest({
-            path:'/system/annotation_labels',
+            url:'/system/annotation_labels',
             data: {
                 study: $tag
             },
@@ -135,7 +136,7 @@ DicomView.prototype.events['click .remove-label'] = function (e) {
     var count = 0;
     restRequest({
         method: 'GET',
-        path: '/system/annotation_studies'
+        url: '/system/annotation_studies'
     }).done(_.bind(function (resp) {
         temp = JSON.stringify(resp);
         for (var t in temp)

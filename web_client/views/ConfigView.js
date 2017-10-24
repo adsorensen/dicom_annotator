@@ -39,7 +39,7 @@ var ConfigView = View.extend({
             else {
                 restRequest({
                     type: 'PUT',
-                    path: '/system/annotation_domains',
+                    url: '/system/annotation_domains',
                     data: {
                         study: $study,
                         newKey: $key,
@@ -76,7 +76,7 @@ var ConfigView = View.extend({
                     yesText: 'Delete study',
                     confirmCallback: () => {
                         restRequest({
-                            path: 'system/annotation_domains',
+                            url: 'system/annotation_domains',
                             data: {
                                 study: $study,
                                 domainKey: ''
@@ -105,7 +105,7 @@ var ConfigView = View.extend({
             else {
                 restRequest({
                     type: 'DELETE',
-                    path: '/system/annotation_domains',
+                    url: '/system/annotation_domains',
                     data: {
                         study: $study,
                         domainKey: $key
@@ -152,7 +152,7 @@ var ConfigView = View.extend({
             else
             {
                 restRequest({
-                    path: 'system/annotation_domains',
+                    url: 'system/annotation_domains',
                     data: {
                         study: studyToAdd,
                         newKey: '',
@@ -196,7 +196,7 @@ var ConfigView = View.extend({
                     yesText: 'Delete study',
                     confirmCallback: () => {
                         restRequest({
-                            path: 'system/annotation_domains',
+                            url: 'system/annotation_domains',
                             data: {
                                 study: $study,
                                 domainKey: ''
@@ -248,6 +248,10 @@ var ConfigView = View.extend({
             else {
                 $('#show-studies').text('Show Studies');
             }
+
+            if (labelVisible) {
+                $('#labels').toggle();
+            }
             // if (studyVisible) {
             //     $('#study-list').toggle();
             // }
@@ -260,11 +264,11 @@ var ConfigView = View.extend({
             var $value = $('#study-list option:selected').val();
             var domains;
             restRequest({
-                path: '/system/annotation_domains'
+                url: '/system/annotation_domains'
             }).then((domainResponse) => {
                 domains = domainResponse;
                 return restRequest({
-                    path: '/system/annotation_labels',
+                    url: '/system/annotation_labels',
                     data: {
                         study: $study
                     },
@@ -274,10 +278,15 @@ var ConfigView = View.extend({
                     studies: domains,
                     studyLabels: studyResponse
                 }));
-                
+                var isVisible = $('#study-list').is( ":visible" );
+                if (isVisible) {
+                    $('#show-studies').text('Hide Studies');
+                }
+                $("#study-list").val($value);
             });
             
-            $('#labels').toggle();
+            //$("#study-list").val($value);
+            //$('#labels').toggle();
         }, 
         deleteStudy: function () {
             alert('howdy');
@@ -291,11 +300,11 @@ var ConfigView = View.extend({
     render: function () {
         var domains;
         restRequest({
-            path: '/system/annotation_domains'
+            url: '/system/annotation_domains'
         }).then((domainResponse) => {
             domains = domainResponse;
             return restRequest({
-                path: '/system/annotation_labels',
+                url: '/system/annotation_labels',
                 data: {
                     study: ''
                 },
@@ -311,24 +320,24 @@ var ConfigView = View.extend({
         });
 
         
-        // if (!this.breadcrumb) {
-        //     this.breadcrumb = new PluginConfigBreadcrumbWidget({
-        //         pluginName: 'Dicom Annotator',
-        //         el: this.$('.g-config-breadcrumb-container'),
-        //         data: {
-        //             domains: {},
-        //             myStudies: {}
-        //         },
-        //         parentView: this
-        //     }).render();
-        // }
+        if (!this.breadcrumb) {
+            this.breadcrumb = new PluginConfigBreadcrumbWidget({
+                pluginName: 'Dicom Annotator',
+                el: this.$('.g-config-breadcrumb-container'),
+                data: {
+                    domains: {},
+                    myStudies: {}
+                },
+                parentView: this
+            }).render();
+        }
         return this;
     },
 
     deleteStudy: function (study) {
         restRequest({
             type: 'DELETE',
-            path: '/system/annotation_domains',
+            url: '/system/annotation_domains',
             data: {
                 study: study,
                 domainKey: ''
