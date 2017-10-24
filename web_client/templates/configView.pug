@@ -18,14 +18,14 @@
   input#domain-delete.btn.btn-sm.btn-primary.save-button(type="submit", value="Delete Domain")
   p
   button#show-studies.btn.btn-sm(title="show studies") Show Studies
-  button#show-domains.btn.btn-sm(title="show domains") Show Domain Labels
+  button#show-labels.btn.btn-sm(title="show labels") Show Study Labels
   .g-config-show-info
   p
-  select#domain-list(size='8' style='width: 250px' type: 'hidden')
-    option domain list placeholder
-    //-each val, key in domains
-      //-option(value=val)= key
-  select#study-list(size='8' style='width: 250px' type: 'hidden')
-    option study list placeholder
-    //-each domain in myStudies
-      //-option(value=domain)= domain
+  select#study-list(size='8' style='width: 250px')
+    //-option temp
+    each val, key in studies
+      option(value=key)= key
+  select#labels(size='8' style='width: 250px')
+    //-option study list placeholder
+    each val, key in studyLabels
+      option(value=val)= key

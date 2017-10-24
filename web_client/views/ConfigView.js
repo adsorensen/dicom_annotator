@@ -224,32 +224,60 @@ var ConfigView = View.extend({
         },
         'click #show-studies': function (event) {
             var domaintemp;
+            // restRequest({
+            //     path: '/system/annotation_domains'
+            // }).then((domainResponse) => {
+            //     this.$('.g-app-footer-container').before('<div class=".g-study-list-container"></div>');
+            //     domaintemp = domainResponse;
+            //     return restRequest({
+            //         path: '/system/annotation_labels'
+            //     });
+            // }).done((studiesResponse) => {
+            //     this.$('.g-study-list-container').html(template({
+            //         studies: studiesResponse,
+            //         domains: domaintemp
+            //     }));
+            // });
+            var studyVisible = $('#study-list').is( ":visible" );
+            var labelVisible = $('#labels').is(":visible");
+            var text = $('#show-studies').text();
+            if (text == 'Show Studies') {
+                $('#show-studies').text('Hide Studies');
+
+            }
+            else {
+                $('#show-studies').text('Show Studies');
+            }
+            // if (studyVisible) {
+            //     $('#study-list').toggle();
+            // }
+            $('#show-labels').toggle();
+            $('#study-list').toggle();
+        },
+        'click #show-labels': function (event) {
+            var isVisible = $('#study-list').is( ":visible" );
+            var $study = $('#study-list option:selected').text();
+            var $value = $('#study-list option:selected').val();
+            var domains;
             restRequest({
                 path: '/system/annotation_domains'
             }).then((domainResponse) => {
-                this.$('.g-app-footer-container').before('<div class=".g-study-list-container"></div>');
-                domaintemp = domainResponse;
+                domains = domainResponse;
                 return restRequest({
-                    path: '/system/annotation_labels'
+                    path: '/system/annotation_labels',
+                    data: {
+                        study: $study
+                    },
                 });
-            }).done((studiesResponse) => {
-                this.$('.g-study-list-container').html(template({
-                    myStudies: studiesResponse,
-                    domains: domaintemp
+            }).done((studyResponse) => {
+                this.$el.html(template({
+                    studies: domains,
+                    studyLabels: studyResponse
                 }));
+                
             });
-            var isVisible = $('#domain-list').is( ":visible" );
-            if (isVisible) {
-                $('#domain-list').toggle();
-            }
-            $('#study-list').toggle();
-        },
-        'click #show-domains': function (event) {
-            var isVisible = $('#study-list').is( ":visible" );
-            if (isVisible) {
-                $('#study-list').toggle();
-            }
-            $('#domain-list').toggle();
+            
+            $('#labels').toggle();
         }, 
         deleteStudy: function () {
             alert('howdy');
@@ -265,27 +293,35 @@ var ConfigView = View.extend({
         restRequest({
             path: '/system/annotation_domains'
         }).then((domainResponse) => {
-            //this.$('.g-app-footer-container').before('<div class=".g-study-list-container"></div>');
-            this.$('.g-config-show-info').after('<div class=".g-study-list-container"></div>');
             domains = domainResponse;
             return restRequest({
-                path: '/system/annotation_labels'
+                path: '/system/annotation_labels',
+                data: {
+                    study: ''
+                },
             });
-        }).done((studiesResponse) => {
-            this.$('.g-study-list-container').html(template({
-                myStudies: studiesResponse,
-                domains: domains
+        }).done((studyResponse) => {
+            this.$el.html(template({
+                studies: domains,
+                studyLabels: studyResponse
             }));
+            $('#show-labels').toggle();
+            $('#labels').toggle();
+            $('#study-list').toggle();
         });
 
-        this.$el.html(template(domains));
-        if (!this.breadcrumb) {
-            this.breadcrumb = new PluginConfigBreadcrumbWidget({
-                pluginName: 'Dicom Annotator',
-                el: this.$('.g-config-breadcrumb-container'),
-                parentView: this
-            }).render();
-        }
+        
+        // if (!this.breadcrumb) {
+        //     this.breadcrumb = new PluginConfigBreadcrumbWidget({
+        //         pluginName: 'Dicom Annotator',
+        //         el: this.$('.g-config-breadcrumb-container'),
+        //         data: {
+        //             domains: {},
+        //             myStudies: {}
+        //         },
+        //         parentView: this
+        //     }).render();
+        // }
         return this;
     },
 
@@ -317,6 +353,31 @@ var ConfigView = View.extend({
             }
         });
     },
+
+    // restRequest({
+    //         path: '/system/annotation_domains'
+    //     }).then((domainResponse) => {
+    //         //this.$('.g-app-footer-container').before('<div class=".g-study-list-container"></div>');
+    //         //this.$('.g-config-show-info').after('<div class=".g-study-list-container"></div>');
+    //         domains = domainResponse;
+    //         return restRequest({
+    //             path: '/system/annotation_labels',
+    //             data: {
+    //                 study: ''
+    //             },
+    //         });
+    //     }).done((studyResponse) => {
+    //         // this.$('.g-study-list-container').html(template({
+    //         //     myStudies: studiesResponse,
+    //         //     domains: domains
+    //         // }));
+    //         //alert(domains);
+    //         this.$el.html(template({
+    //             studies: domains,
+    //             studyLabels: studyResponse
+    //         }));
+    //         $('#show-labels').toggle();
+    //     });
 
     // _saveSettings: function (settings) {
     //     restRequest({

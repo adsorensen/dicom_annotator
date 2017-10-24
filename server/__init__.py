@@ -44,7 +44,9 @@ def updateAnnotationDomains(study, newKey, newValue):
             return "already exists"
         else:
             oldDict = myStudies[study]
-            myStudies[study] = {**oldDict, **newDict}
+            #myStudies[study] = {**oldDict, **newDict}
+            myStudies[study] = oldDict.copy()
+            myStudies[study].update(newDict)
         return ModelImporter.model('setting').set('annotation_domain_list', myStudies)
 
 
