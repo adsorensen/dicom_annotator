@@ -9,20 +9,6 @@ import View from 'girder/views/View';
 wrap(DicomView, 'render', function (render) {
     render.call(this);
     var domains;
-    // restRequest({
-    //     path: '/system/annotation_domains'
-    // }).then((domainResponse) => {
-    //     this.$('.g-dicom-panes').before('<div class="g-annotation-container"></div>');
-    //     domains = domainResponse;
-    //     return restRequest({
-    //         path:'/system/annotation_studies'
-    //     });
-    // }).done((studiesResponse) => {
-    //     this.$('.g-annotation-container').html(template({
-    //         domains: domains,
-    //         myStudies: studiesResponse
-    //     }));
-    // });
     restRequest({
         url: '/system/annotation_domains',
     }).then((domainResponse) => {
@@ -42,16 +28,6 @@ wrap(DicomView, 'render', function (render) {
             myStudies: studiesResponse
         }));
     });
-
-
-    // restRequest({
-    //     path: '/system/annotation_domains'
-    // }).done((resp) => {
-    //     this.$('.g-dicom-panes').before('<div class="g-annotation-container"></div>');
-    //     this.$('.g-annotation-container').html(template({
-    //         domains: resp
-    //     }));
-    // });
     return this;
 });
 
@@ -70,8 +46,8 @@ DicomView.prototype.events['click .add-label'] = function (e) {
     else
     {
         $('#labels').append($('<option>', {
-        value: $value,
-        text: $label
+            value: $value,
+            text: $label
         }));
     }
 }
@@ -133,7 +109,6 @@ DicomView.prototype.events['change #study-selection'] = function (e) {
 DicomView.prototype.events['click .remove-label'] = function (e) {
     $('#labels option:selected').remove();
     var temp = "adfkl";
-    var count = 0;
     restRequest({
         method: 'GET',
         url: '/system/annotation_studies'
@@ -145,7 +120,5 @@ DicomView.prototype.events['click .remove-label'] = function (e) {
                 console.log(t + " -> " + temp[t]);
             }
         }
-        //alert(temp);
-        //alert(count);
     }, this));
 }

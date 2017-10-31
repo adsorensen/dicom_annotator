@@ -22,10 +22,8 @@
   .g-config-show-info
   p
   select#study-list(size='8' style='width: 250px')
-    //-option temp
     each val, key in studies
       option(value=key)= key
   select#labels(size='8' style='width: 250px')
-    //-option study list placeholder
     each val, key in studyLabels
       option(value=val)= key

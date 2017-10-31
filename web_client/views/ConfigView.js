@@ -141,7 +141,6 @@ var ConfigView = View.extend({
         'click #save-study': function (event) {
             event.preventDefault();
             var studyToAdd = $('#annotator-study').val();
-            //alert("hello");
             if (studyToAdd == "") {
                 events.trigger('g:alert', {
                     text: 'Please input a study name.',
@@ -223,45 +222,55 @@ var ConfigView = View.extend({
             }
         },
         'click #show-studies': function (event) {
-            var domaintemp;
-            // restRequest({
-            //     path: '/system/annotation_domains'
-            // }).then((domainResponse) => {
-            //     this.$('.g-app-footer-container').before('<div class=".g-study-list-container"></div>');
-            //     domaintemp = domainResponse;
-            //     return restRequest({
-            //         path: '/system/annotation_labels'
-            //     });
-            // }).done((studiesResponse) => {
-            //     this.$('.g-study-list-container').html(template({
-            //         studies: studiesResponse,
-            //         domains: domaintemp
-            //     }));
-            // });
+            var domains;
             var studyVisible = $('#study-list').is( ":visible" );
             var labelVisible = $('#labels').is(":visible");
             var text = $('#show-studies').text();
-            if (text == 'Show Studies') {
-                $('#show-studies').text('Hide Studies');
+            var tempStudy = $('#annotator-study').val();
+            var tempKey = $('#key-input').val();
+            var tempValue = $('#value-input').val();
+            restRequest({
+                url: '/system/annotation_domains'
+            }).then((domainResponse) => {
+                domains = domainResponse;
+                return restRequest({
+                    url: '/system/annotation_labels'
+                });
+            }).done((studyResponse) => {
+                this.$el.html(template({
+                    studies: domains,
+                    studyLabels: studyResponse
+                }));
+                if (text == 'Show Studies') {
+                    $('#show-studies').text('Hide Studies');
+                }
+                else {
+                    $('#show-studies').text('Show Studies');
+                    $('#show-labels').toggle();
+                }
 
-            }
-            else {
-                $('#show-studies').text('Show Studies');
-            }
+                if (labelVisible) {
+                    $('#labels').toggle();
+                }
+                else {
+                    $('#labels').toggle();
+                }
 
-            if (labelVisible) {
-                $('#labels').toggle();
-            }
-            // if (studyVisible) {
-            //     $('#study-list').toggle();
-            // }
-            $('#show-labels').toggle();
-            $('#study-list').toggle();
+                if (studyVisible) {
+                    $('#study-list').toggle();
+                }
+                $('#annotator-study').val(tempStudy);
+                $('#key-input').val(tempKey);
+                $('#value-input').val(tempValue);
+            });
         },
         'click #show-labels': function (event) {
             var isVisible = $('#study-list').is( ":visible" );
             var $study = $('#study-list option:selected').text();
             var $value = $('#study-list option:selected').val();
+            var tempStudy = $('#annotator-study').val();
+            var tempKey = $('#key-input').val();
+            var tempValue = $('#value-input').val();
             var domains;
             restRequest({
                 url: '/system/annotation_domains'
@@ -278,19 +287,15 @@ var ConfigView = View.extend({
                     studies: domains,
                     studyLabels: studyResponse
                 }));
-                var isVisible = $('#study-list').is( ":visible" );
                 if (isVisible) {
                     $('#show-studies').text('Hide Studies');
                 }
                 $("#study-list").val($value);
+                $('#annotator-study').val(tempStudy);
+                $('#key-input').val(tempKey);
+                $('#value-input').val(tempValue);
             });
-            
-            //$("#study-list").val($value);
-            //$('#labels').toggle();
         }, 
-        deleteStudy: function () {
-            alert('howdy');
-        },
     },
     initialize: function () {
         var domains;
@@ -319,7 +324,6 @@ var ConfigView = View.extend({
             $('#study-list').toggle();
         });
 
-        
         if (!this.breadcrumb) {
             this.breadcrumb = new PluginConfigBreadcrumbWidget({
                 pluginName: 'Dicom Annotator',
@@ -362,53 +366,6 @@ var ConfigView = View.extend({
             }
         });
     },
-
-    // restRequest({
-    //         path: '/system/annotation_domains'
-    //     }).then((domainResponse) => {
-    //         //this.$('.g-app-footer-container').before('<div class=".g-study-list-container"></div>');
-    //         //this.$('.g-config-show-info').after('<div class=".g-study-list-container"></div>');
-    //         domains = domainResponse;
-    //         return restRequest({
-    //             path: '/system/annotation_labels',
-    //             data: {
-    //                 study: ''
-    //             },
-    //         });
-    //     }).done((studyResponse) => {
-    //         // this.$('.g-study-list-container').html(template({
-    //         //     myStudies: studiesResponse,
-    //         //     domains: domains
-    //         // }));
-    //         //alert(domains);
-    //         this.$el.html(template({
-    //             studies: domains,
-    //             studyLabels: studyResponse
-    //         }));
-    //         $('#show-labels').toggle();
-    //     });
-
-    // _saveSettings: function (settings) {
-    //     restRequest({
-    //         type: 'PUT',
-    //         path: 'system/setting',
-    //         data: {
-    //             list: JSON.stringify(settings)
-    //         },
-    //         error: null
-    //     }).done(_.bind(function () {
-    //         events.trigger('g:alert', {
-    //             icon: 'ok',
-    //             text: 'Settings saved.',
-    //             type: 'success',
-    //             timeout: 4000
-    //         });
-    //     }, this)).fail(_.bind(function (resp) {
-    //         this.$('#g-provenance-error-message').text(
-    //             resp.responseJSON.message
-    //         );
-    //     }, this));
-    // }
 });
 
 export default ConfigView;
